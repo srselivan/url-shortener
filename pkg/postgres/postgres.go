@@ -5,8 +5,8 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func New(dataSourceName string) (*sqlx.DB, error) {
-	db, err := sqlx.Connect("pgx", dataSourceName)
+func New(url string) (*sqlx.DB, error) {
+	db, err := sqlx.Connect("pgx", url)
 	if err != nil {
 		return nil, err
 	}

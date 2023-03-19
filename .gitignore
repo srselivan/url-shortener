@@ -19,6 +19,3 @@ bin
 
 # IDE
 .idea
-
-# Inmemory database storage directory
-storage

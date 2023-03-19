@@ -1,4 +1,4 @@
 CREATE TABLE urls (
-    key text NOT NULL,
+    id bigint NOT NULL,
     url text NOT NULL
 );

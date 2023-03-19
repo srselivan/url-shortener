@@ -2,16 +2,16 @@ package service
 
 import (
 	"fmt"
-	"github.com/google/uuid"
 )
 
 type Repository interface {
-	Set(key string, url string) error
-	Get(key string) (string, error)
+	Set(id uint64, url string) error
+	Get(id uint64) (string, error)
 }
 
 type Shortener struct {
 	repositories []Repository
+	seq          sequence
 }
 
 func New(repositories ...Repository) *Shortener {
@@ -21,12 +21,12 @@ func New(repositories ...Repository) *Shortener {
 }
 
 func (s *Shortener) Shorten(url string) (string, error) {
-	id := uuid.New().ID()
-	key := shorten(uint(id))
+	id := s.seq.next()
+	key := keyById(id)
 	result := fmt.Sprint("http://localhost:8080/" + key)
 
 	for _, repo := range s.repositories {
-		if err := repo.Set(key, url); err != nil {
+		if err := repo.Set(id, url); err != nil {
 			return "", err
 		}
 	}
@@ -35,9 +35,10 @@ func (s *Shortener) Shorten(url string) (string, error) {
 }
 
 func (s *Shortener) GetOriginal(key string) (string, error) {
-	var result string
+	result := ""
+	id := idByKey(key)
 
-	result, err := s.repositories[0].Get(key)
+	result, err := s.repositories[0].Get(id)
 	if err != nil {
 		return "", err
 	}

@@ -1,4 +1,4 @@
-package handler
+package http
 
 import (
 	"fmt"
@@ -13,7 +13,9 @@ func (h *Handler) GetOriginalUrl() http.Handler {
 
 		original, err := h.s.GetOriginal(key)
 		if err != nil {
-			log.Println(err)
+			log.Printf("handle get original: %s", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 
 		w.WriteHeader(http.StatusOK)
