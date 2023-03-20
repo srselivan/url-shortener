@@ -2,6 +2,7 @@ package http
 
 import "github.com/gorilla/mux"
 
+//go:generate mockery --name Service
 type Service interface {
 	Shorten(url string) (string, error)
 	GetOriginal(url string) (string, error)

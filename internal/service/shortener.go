@@ -4,6 +4,9 @@ import (
 	"fmt"
 )
 
+const defaultHost = "http://localhost"
+
+//go:generate mockery --name Repository
 type Repository interface {
 	Set(id uint64, url string) error
 	Get(id uint64) (string, error)
@@ -12,18 +15,20 @@ type Repository interface {
 type Shortener struct {
 	repositories []Repository
 	seq          sequence
+	addr         string
 }
 
-func New(repositories ...Repository) *Shortener {
+func New(port string, repositories ...Repository) *Shortener {
 	return &Shortener{
 		repositories: repositories,
+		addr:         fmt.Sprintf("%s:%s", defaultHost, port),
 	}
 }
 
 func (s *Shortener) Shorten(url string) (string, error) {
 	id := s.seq.next()
 	key := keyById(id)
-	result := fmt.Sprint("http://localhost:8080/" + key)
+	result := fmt.Sprint(s.addr + "/" + key)
 
 	for _, repo := range s.repositories {
 		if err := repo.Set(id, url); err != nil {

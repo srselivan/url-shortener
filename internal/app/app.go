@@ -34,7 +34,7 @@ func Run(cfg *config.Config) {
 		repos = append(repos, rPg)
 	}
 
-	s := service.New(repos...)
+	s := service.New(cfg.HTTP.Port, repos...)
 	h := controller.New(s)
 
 	srv := server.New(h.InitRoutes(), cfg)
