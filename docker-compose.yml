@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./
+    ports:
+      - ${HTTP_PORT}:${HTTP_PORT}
+    depends_on:
+      - postgres
+
+  postgres:
+    restart: always
+    image: postgres:latest
+    environment:
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - POSTGRES_DB=${PG_DB}
+    ports:
+      - ${PG_PORT}:${PG_PORT}
+    volumes:
+      - ./schema:/docker-entrypoint-initdb.d

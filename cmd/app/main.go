@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"log"
 	"url-shortener/config"
 	"url-shortener/internal/app"
@@ -12,9 +11,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("config error: %s", err)
 	}
-
-	flag.BoolVar(&cfg.Postgres.UsePostgres, "d", false, "use postgres")
-	flag.Parse()
 
 	app.Run(cfg)
 }

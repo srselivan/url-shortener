@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -24,7 +25,10 @@ func Run(cfg *config.Config) {
 	repos = append(repos, rMem)
 
 	if cfg.Postgres.UsePostgres {
-		dbPostgres, err := postgres.New(cfg.Postgres.URL)
+		dbPostgres, err := postgres.New(
+			fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+				cfg.Postgres.Host, cfg.Postgres.Port, cfg.Postgres.User, cfg.Postgres.Password, cfg.Postgres.DBName, cfg.Postgres.SSLMode),
+		)
 		if err != nil {
 			log.Fatalf("postgres db New(): %s", err)
 		}
