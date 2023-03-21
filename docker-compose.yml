@@ -6,7 +6,8 @@ services:
     ports:
       - ${HTTP_PORT}:${HTTP_PORT}
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
   postgres:
     restart: always
@@ -18,3 +19,8 @@ services:
       - ${PG_PORT}:${PG_PORT}
     volumes:
       - ./schema:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $PG_DB -U $PG_USER" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
