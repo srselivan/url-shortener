@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"url-shortener/internal/service/repository"
 )
 
 func (h *Handler) GetOriginalUrl() http.Handler {
@@ -13,8 +14,12 @@ func (h *Handler) GetOriginalUrl() http.Handler {
 
 		original, err := h.s.GetOriginal(key)
 		if err != nil {
-			log.Printf("handle get original: %s", err)
-			w.WriteHeader(http.StatusInternalServerError)
+			if err == repository.ErrorNotFound {
+				w.WriteHeader(http.StatusNotFound)
+			} else {
+				log.Printf("handle GetOriginalUrl: %s", err)
+				w.WriteHeader(http.StatusInternalServerError)
+			}
 			return
 		}
 

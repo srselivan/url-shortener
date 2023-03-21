@@ -1,12 +1,12 @@
 package http
 
 import (
-	"errors"
 	"github.com/stretchr/testify/assert"
 	"io"
 	"net/http/httptest"
 	"testing"
 	"url-shortener/internal/controller/http/mocks"
+	"url-shortener/internal/service/repository"
 )
 
 func TestHandler_GetOriginalUrl(t *testing.T) {
@@ -34,12 +34,12 @@ func TestHandler_GetOriginalUrl(t *testing.T) {
 		{
 			name: "incorrect key",
 			key:  "-",
-			err:  errors.New("error"),
+			err:  repository.ErrorNotFound,
 			expected: struct {
 				code int
 				body string
 			}{
-				code: 500,
+				code: 404,
 				body: "",
 			},
 		},

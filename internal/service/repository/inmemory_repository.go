@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"fmt"
 	"sync"
 )
 
@@ -16,7 +15,7 @@ func NewInMemoryRepository() *InMemoryRepository {
 func (pr *InMemoryRepository) Set(id uint64, url string) error {
 	_, ok := pr.db.Load(id)
 	if ok {
-		return fmt.Errorf("in-memory repository: id is already exist")
+		return ErrorAlreadyExists
 	}
 
 	pr.db.Store(id, url)
@@ -28,7 +27,7 @@ func (pr *InMemoryRepository) Get(id uint64) (string, error) {
 	result := ""
 
 	if value, ok := pr.db.Load(id); !ok {
-		return "", fmt.Errorf("in-memory repository: id is not exist")
+		return "", ErrorNotFound
 	} else {
 		result = value.(string)
 	}

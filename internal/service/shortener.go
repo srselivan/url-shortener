@@ -1,7 +1,9 @@
 package service
 
 import (
+	"errors"
 	"fmt"
+	"url-shortener/internal/service/repository"
 )
 
 const defaultHost = "http://localhost"
@@ -19,10 +21,14 @@ type Shortener struct {
 }
 
 func New(port string, repositories ...Repository) *Shortener {
-	return &Shortener{
+	s := &Shortener{
 		repositories: repositories,
 		addr:         fmt.Sprintf("%s:%s", defaultHost, port),
 	}
+	if len(repositories) > 1 {
+		s.seq.setStartNumber(repositories[1].(*repository.PostgresRepository))
+	}
+	return s
 }
 
 func (s *Shortener) Shorten(url string) (string, error) {
@@ -40,10 +46,19 @@ func (s *Shortener) Shorten(url string) (string, error) {
 }
 
 func (s *Shortener) GetOriginal(key string) (string, error) {
+	err := errors.New("")
 	result := ""
 	id := idByKey(key)
 
-	result, err := s.repositories[0].Get(id)
+	for _, repo := range s.repositories {
+		result, err = repo.Get(id)
+		if err == nil {
+			break
+		}
+		if err != nil && err != repository.ErrorNotFound {
+			return "", err
+		}
+	}
 	if err != nil {
 		return "", err
 	}
