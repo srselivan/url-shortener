@@ -3,7 +3,7 @@
 ```dockerfile
 CMD ["bin/app", "-d"]
 ```
-Или с помощью переменной окружения `USE_POSTGRES` равной `true`
+Или с помощью переменной окружения `USE_POSTGRES` равной `true`\
 Замечание: `USE_POSTGRES` перекрывает флаг `-d`
 * Иначе с помощью `-d` при запуске или `USE_POSTGRES=true`
 
