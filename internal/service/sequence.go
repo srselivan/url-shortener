@@ -12,7 +12,9 @@ type sequence struct {
 
 func (s *sequence) setStartNumber(d dataSource) {
 	index := d.GetLastIndex()
-	s.currentNumber.Store(index + 1)
+	if index != 0 {
+		s.currentNumber.Store(index + 1)
+	}
 }
 
 func (s *sequence) next() uint64 {
