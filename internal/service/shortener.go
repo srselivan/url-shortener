@@ -25,8 +25,13 @@ func New(port string, repositories ...Repository) *Shortener {
 		repositories: repositories,
 		addr:         fmt.Sprintf("%s:%s", defaultHost, port),
 	}
-	if len(repositories) > 1 {
-		s.seq.setStartNumber(repositories[1].(*repository.PostgresRepository))
+loop:
+	for _, repo := range repositories {
+		switch v := repo.(type) {
+		case *repository.PostgresRepository:
+			s.seq.setStartNumber(v)
+			break loop
+		}
 	}
 	return s
 }
